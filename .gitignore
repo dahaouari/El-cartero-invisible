@@ -1,0 +1,13 @@
+# Entorno virtual de Python
+Servidor/.venv/
+
+# Caché de Python
+__pycache__/
+*.pyc
+
+# Jest / Node
+node_modules/
+
+# Configuración de VS Code
+.vscode/# Created by venv; see https://docs.python.org/3/library/venv.html
+*
