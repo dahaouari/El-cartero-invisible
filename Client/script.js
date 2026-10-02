@@ -41,3 +41,32 @@ if (info) {
     // Recorda: a JS les propietats CSS van en camelCase
     info.style.color = "#2c3e50"; 
 }
+
+function renderitzarCartes(cartes) {
+    const contenidor = document.querySelector("#contenidorCartes");
+
+    contenidor.innerHTML = "";
+
+    cartes.forEach(carta => {
+        const divCarta = document.createElement("div");
+        divCarta.className = "carta";
+
+        const titol = document.createElement("h3");
+        titol.textContent = `De: ${carta.remitent}`;
+
+        const paragraf = document.createElement("p");
+        paragraf.textContent = carta.contingut;
+
+        const idSpan = document.createElement("span");
+        idSpan.textContent = `#${carta.id}`;
+        idSpan.setAttribute("data-id", carta.id);
+
+        divCarta.appendChild(titol);
+        divCarta.appendChild(paragraf);
+        divCarta.appendChild(idSpan);
+
+        contenidor.appendChild(divCarta);
+    });
+}
+
+export { renderitzarCartes };
