@@ -1,3 +1,10 @@
+/* ==========================================
+   ESTILS GENERALS
+   ========================================== */
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: #f4f1ea;
     font-family: 'Segoe UI', sans-serif;
@@ -14,26 +21,18 @@ h1:hover { /* canvia de color en passar-hi el ratolí */
     color: #e74c3c;
 }
 
-section:first-child {
-    border-left: 4px solid #2c3e50;
-}
-
 section {
     margin: 20px 0;
     padding: 16px;
 }
 
-h1:hover {
-    color: #e74c3c;
-}
-
 section:first-child {
     border-left: 4px solid #2c3e50;
 }
 
-* {
-    box-sizing: border-box;
-}
+/* ==========================================
+   🟪 SETMANA 3: EL BUZÓN I LES CARTES
+   ========================================== */
 
 /* 1. El Buzón clavat a la finestra */
 #buzon {
@@ -54,7 +53,7 @@ section:first-child {
     transform: scale(1.1); /* Petit efecte en passar el ratolí */
 }
 
-
+/* 2. Les cartes flotants */
 .carta {
     float: left;
     width: 45%;        /* Dues cartes per fila */
@@ -63,17 +62,108 @@ section:first-child {
     border: 1px solid #ccc;
     padding: 1rem;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Aprofitada del teu 1r bloc */
-    /* Molt important perquè el width: 45% no es trenqui amb el padding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
 }
 
+/* Botó Eliminar (Setmana 4) */
+.carta .btn-eliminar {
+    margin-top: 12px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
 
-/* Evita que el contenidor pare col·lapsi i tingui alçada 0 */
+.carta .btn-eliminar:hover {
+    background-color: #c0392b;
+}
+
+/* Evita que el contenidor pare col·lapsi i tingui alçada 0 (Clearfix) */
 #contenidorCartes::after {
     content: "";
     display: table;
     clear: both;
 }
 
+/* ==========================================
+   🟪 SETMANA 4: FORMULARI DE NOVA CARTA
+   ========================================== */
 
+/* 1. El contenidor de la secció (la finestreta) */
+#formulariCarta {
+    background-color: #fdfbf7; /* Color paper antic / pergamí */
+    border: 2px dashed #d4c5b0; /* Vora discontínua, com un cupó postal */
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto; /* Centra el formulari */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    position: relative; 
+}
+
+/* 2. El títol del formulari */
+#formulariCarta h2 {
+    color: #5c4033; /* Marró fosc, elegant */
+    margin-top: 0;
+    border-bottom: 2px solid #e0d8c8;
+    padding-bottom: 0.5rem;
+    font-family: 'Courier New', Courier, monospace; /* Tipografia de màquina d'escriure */
+}
+
+/* 3. Els camps de text i l'àrea de text */
+#formCarta input,
+#formCarta textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 1.2rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    background-color: #fff;
+    box-sizing: border-box; 
+    transition: border-color 0.3s, box-shadow 0.3s; 
+}
+
+/* 4. Efecte "Focus" (quan l'usuari fa clic per escriure) */
+#formCarta input:focus,
+#formCarta textarea:focus {
+    outline: none;
+    border-color: #8B4513; /* Es posa del color del buzón! */
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.2); 
+}
+
+/* 5. L'àrea de text específicament */
+#formCarta textarea {
+    min-height: 120px;
+    resize: vertical; 
+}
+
+/* 6. El botó d'enviar */
+#formCarta button[type="submit"] {
+    background-color: #8B4513; 
+    color: white;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    width: 100%;
+    letter-spacing: 0.5px;
+}
+
+/* 7. Efecte Hover del botó d'enviar */
+#formCarta button[type="submit"]:hover {
+    background-color: #6b3410; 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}

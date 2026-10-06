@@ -152,3 +152,74 @@ if (typeof document !== "undefined") {
 // ==========================================
 
 export { renderitzarCartes };
+
+// 🟦 SETMANA 4: Creem el botó Eliminar
+const btnEliminar = document.createElement("button");
+btnEliminar.textContent = "Eliminar";
+btnEliminar.className = "btn-eliminar";
+btnEliminar.dataset.id = carta.id;
+
+// Muntem la carta (actualitzat)
+divCarta.appendChild(titolCarta);
+divCarta.appendChild(paragraf);
+divCarta.appendChild(idSpan);
+divCarta.appendChild(btnEliminar); // 👈 Afegim el botó
+
+// ======================================
+// 🟦 SETMANA 4: Delegació d'esdeveniments (EL PORTER)
+// ======================================
+const contenidorCartes = document.querySelector("#contenidorCartes");
+if (contenidorCartes) {
+    contenidorCartes.addEventListener("click", (event) => {
+        if (event.target.classList.contains("btn-eliminar")) {
+            const idAEliminar = parseInt(event.target.dataset.id);
+
+            const index = cartesSimulades.findIndex(c => c.id === idAEliminar);
+            if (index !== -1) {
+                cartesSimulades.splice(index, 1);
+                renderitzarCartes(cartesSimulades);
+            }
+        }
+    });
+}
+
+// ======================================
+// 🟦 SETMANA 4: Formulari
+// ======================================
+const formCarta = document.querySelector("#formCarta");
+if (formCarta) {
+    formCarta.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const remitent = document.querySelector("#remitent").value.trim();
+        const destinatari = document.querySelector("#destinatari").value.trim();
+        const contingut = document.querySelector("#contingut").value.trim();
+        const personatge = document.querySelector("#personatge").value.trim() || "Einstein";
+
+        if (!remitent || !destinatari || !contingut) {
+            alert("Els camps remitent, destinatari i contingut són obligatoris!");
+            return;
+        }
+
+        const nouId = cartesSimulades.length > 0 ? Math.max(...cartesSimulades.map(c => c.id)) + 1 : 1;
+
+        cartesSimulades.push({
+            id: nouId,
+            remitent: remitent,
+            destinatari: destinatari,
+            contingut: contingut,
+            personatge: personatge
+        });
+
+        renderitzarCartes(cartesSimulades);
+        formCarta.reset();
+    });
+
+                cartesSimulades.push({
+                id: nouId,
+                remitent: `Carter ${nouId}`,
+                destinatari: "Proves",
+                contingut: "Aquesta carta s'acaba de crear dinàmicament!",
+                personatge: "Einstein"
+            });
+}
