@@ -12,4 +12,4 @@ async def test_root():
         response = await ac.get("/")
 
         assert response.status_code == 200
-        assert response.json() == {"missatge": "Hola, món!"}
+        assert response.json() == {"missatge": "Hola, món! Benvingut a l'oficina de correus."}

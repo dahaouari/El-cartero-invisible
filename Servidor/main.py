@@ -3,15 +3,22 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# 1. Model Pydantic (el "control de seguretat" de l'oficina)
+
+# ==========================
+# 🟦 MODEL PYDANTIC
+# ==========================
+
 class Carta(BaseModel):
     remitent: str
     destinatari: str
     contingut: str
-    personatge: str = "Einstein"  # Valor per defecte per no obligar a enviar-lo
+    personatge: str = "Einstein"
 
-# 2. Llista en memòria (mutable, amb dades inicials de prova)
-# La posem en minúscules perquè la modificarem amb el POST
+
+# ==========================
+# 🟦 LLISTA DE CARTES
+# ==========================
+
 cartes = [
     {
         "id": 1,
@@ -38,7 +45,7 @@ cartes = [
 
 
 # ==========================
-# 🏠 RUTA PRINCIPAL
+# 🏠 GET /
 # ==========================
 @app.get("/")
 def root():
@@ -46,28 +53,30 @@ def root():
 
 
 # ==========================
-# 🟩 NOU: POST /cartas (Rebre cartes)
+# 🟩 POST /cartas
 # ==========================
+
 @app.post("/cartas")
 def crear_carta(carta: Carta):
-    # Pydantic V2: fem servir model_dump() en lloc de .dict()
+
     nova_carta = carta.model_dump()
-    
-    # Generem un ID automàtic basat en la llargada actual
+
     nova_carta["id"] = len(cartes) + 1
-    
-    # Guardem la carta a la llista en memòria
+
     cartes.append(nova_carta)
-    
+
     return nova_carta
 
 
 # ==========================
-# 🟩 GET /cartas/{id} (Buscar per ID)
+# 🟩 GET /cartas/{id}
 # ==========================
+
 @app.get("/cartas/{id}")
 def obtenir_carta(id: int):
+
     for carta in cartes:
+
         if carta["id"] == id:
             return carta
 
@@ -78,15 +87,22 @@ def obtenir_carta(id: int):
 
 
 # ==========================
-# 🟩 GET /cartas (Llistar amb filtres)
+# 🟩 GET /cartas
 # ==========================
+
 @app.get("/cartas")
-def llistar_cartes(limit: int = 10, offset: int = 0, personatge: str = None):
-    # Si hi ha filtre per personatge, filtrem (segons el temari, filtrem per remitent)
+def llistar_cartes(
+    limit: int = 10,
+    offset: int = 0,
+    personatge: str = None
+):
+
     if personatge:
-        cartesFiltrades = [c for c in cartes if c["remitent"] == personatge]
+        cartesFiltrades = [
+            c for c in cartes
+            if c["personatge"] == personatge
+        ]
     else:
         cartesFiltrades = cartes
-    
-    # Apliquem la paginació (slicing)
+
     return cartesFiltrades[offset:offset + limit]
