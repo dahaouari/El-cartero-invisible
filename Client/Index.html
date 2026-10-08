@@ -16,16 +16,17 @@
     </header>
 
     <main>
-        <!-- SETMANA 1: Botó Saluda -->
+<!-- SETMANA 1: Botó Saluda 
         <section id="benvinguda">
             <button id="btnSaluda">Saluda'm!</button>
-        </section>
-
-        <!-- SETMANA 3: Llistat de cartes i botó afegir de prova -->
+        </section> -->
+        <!-- SETMANA 3: Llistat de cartes i botó afegir de prova (ON ES VEUREN LES CARTES) -->
         <section id="llistatCartes">
             <h2>📬 Cartes rebudes</h2>
             <button id="btnAfegir">➕ Afegir carta de prova</button>
+            <button id="btnMostrar">👁️ Mostrar cartes</button>
             
+            <!-- Aquí el JS pintarà les cartes. El 'clearfix' evita que el contenidor col·lapsi pels floats -->
             <div id="contenidorCartes"></div>
             <div class="clearfix"></div>
         </section>
@@ -41,12 +42,35 @@
                 <button type="submit">📨 Enviar carta</button>
             </form>
         </section>
+
+        <!-- 🟪 SETMANA 4 (M09): Taula de Registre (Ocultada per defecte) -->
+        <section id="registre">
+            <h2>📋 Registre de l'oficina</h2>
+            <button id="btnMostrarTaula">👁️ Mostrar / Ocultar Taula</button>
+            
+            <!-- La taula comença oculta gràcies al CSS (display: none) -->
+            <table id="taulaCartes">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Remitent</th>
+                        <th>Destinatari</th>
+                        <th>Contingut</th>
+                        <th>Accions</th>
+                    </tr>
+                </thead>
+                <tbody id="cosTaula">
+                    <!-- El JS omplirà aquestes files dinàmicament -->
+                </tbody>
+            </table>
+        </section>
     </main>
 
     <footer>
         <p>&copy; 2026 El Cartero Invisible</p>
     </footer>
 
+    <!-- El buzón FIX (Sempre visible a la cantonada) -->
     <div id="buzon">📮</div>
 
     <!-- ⚠️ CANVI CRÍTIC: type="module" en lloc de "defer" -->

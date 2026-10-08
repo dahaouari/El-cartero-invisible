@@ -44,7 +44,7 @@ section:first-child {
     padding: 16px;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    z-index: 100;
+    z-index: 1000;
     cursor: pointer;
     transition: transform 0.2s;
 }
@@ -166,4 +166,58 @@ section:first-child {
     background-color: #6b3410; 
     transform: translateY(-2px); 
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* ==========================================
+   🟪 SETMANA 4: TAULA DE REGISTRE
+   ========================================== */
+
+#registre {
+    margin-top: 2rem;
+}
+
+#btnMostrarTaula {
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+/* Estils generals de la taula */
+#taulaCartes {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+    /* ⭐ CLAU M09: La taula té position relative i z-index baix */
+    position: relative;
+    z-index: 1;
+}
+
+#taulaCartes th,
+#taulaCartes td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+#taulaCartes th {
+    background-color: #8B4513;
+    color: white;
+}
+
+#taulaCartes tr:nth-child(even) {
+    background-color: #f9f9f9; /* Files alternes */
+}
+
+/* ⭐ CLAU M09: El truc del truncat (text-overflow) */
+.contingut-cell {
+    max-width: 200px;        /* Amplada màxima */
+    overflow: hidden;        /* Amaga el que sobresurt */
+    text-overflow: ellipsis; /* Afegeix els punts suspensius "..." */
+    white-space: nowrap;     /* Evita que el text salti de línia */
 }

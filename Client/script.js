@@ -78,16 +78,14 @@ function inicialitzar() {
     // SETMANA 1: Botó de salutació
     // ======================================
 
-    function saluda() {
-        alert("Hola, món! 📮");
-    }
-
-    const boto = document.getElementById("btnSaluda");
+    /* const boto = document.getElementById("btnSaluda");
 
     if (boto) {
         boto.addEventListener("click", saluda);
     }
-
+    function saluda() {
+        alert("Hola, món! Benvingut a l'oficina de correus.");
+    } */
 
     // ======================================
     // SETMANA 2: Manipulació del DOM
@@ -112,55 +110,20 @@ function inicialitzar() {
     // SETMANA 3: Mostrar les cartes
     // ======================================
 
-    function renderitzarCartes(cartes) {
+   const botoMostrarCartes = document.querySelector("#btnMostrar");
+   botoMostrarCartes.addEventListener("click", () => {
+        renderitzarCartes(cartesSimulades);
+   });
 
-        const contenidor = document.querySelector("#contenidorCartes");
-
-        if (!contenidor) {
-            return;
-        }
-
-        // Buidem el contenidor abans de tornar a pintar
-        contenidor.innerHTML = "";
-
-        cartes.forEach(carta => {
-            // 👇 INICI DEL BUCLE: Tot el que pengi d'una carta ha d'estar AQUÍ DINS
-
-            // Creem el div de la carta
-            const divCarta = document.createElement("div");
-            divCarta.className = "carta";
-
-            // Creem el títol
-            const titolCarta = document.createElement("h3");
-            titolCarta.textContent = `De: ${carta.remitent}`;
-
-            // Creem el paràgraf (amb createTextNode per complir el temari)
-            const paragraf = document.createElement("p");
-            const textNode = document.createTextNode(carta.contingut);
-            paragraf.appendChild(textNode);
-
-            // Creem l'span de l'ID
-            const idSpan = document.createElement("span");
-            idSpan.textContent = `#${carta.id}`;
-            idSpan.setAttribute("data-id", carta.id);
-
-            // 🟦 SETMANA 4: Creem el botó Eliminar (HA D'ESTAR A DINS DEL FOREACH!)
-            const btnEliminar = document.createElement("button");
-            btnEliminar.textContent = "Eliminar";
-            btnEliminar.className = "btn-eliminar";
-            btnEliminar.dataset.id = carta.id; // 👈 Ara sí que sap quina 'carta' és
-
-            // Muntem la carta (l'ordre en què s'enganxen al div)
-            divCarta.appendChild(titolCarta);
-            divCarta.appendChild(paragraf);
-            divCarta.appendChild(idSpan);
-            divCarta.appendChild(btnEliminar);
-
-            // Afegim la carta al contenidor
-            contenidor.appendChild(divCarta);
-
-        }); // 👈 AQUÍ ES TANCA EL BUCLE forEach. La variable 'carta' deixa d'existir a partir d'aquí.
-    }
+   const botoAfegirCartes = document.querySelector("#btnAfegir");
+   botoAfegirCartes.addEventListener("click", () => {
+    cartesSimulades.push({
+        id: cartesSimulades.length + 1,
+        remitent: "Nou Remitent",
+        contingut: "Aquesta és una carta de prova."
+    });
+    renderitzarCartes(cartesSimulades);
+});
 
     // ======================================
     // 🟦 SETMANA 4: Delegació d'esdeveniments (EL PORTER)
@@ -213,5 +176,10 @@ function inicialitzar() {
         });
     }
 
-    inicialitzar();
+    
 }
+
+if (typeof document !== 'undefined') {
+    document.addEventListener("DOMContentLoaded", inicialitzar);
+}
+
