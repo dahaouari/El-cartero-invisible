@@ -5,27 +5,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Cartero Invisible</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
     <header>
         <h1 id="titolPrincipal">El Cartero Invisible</h1>
-        <p class="info">Benvingut al teu buzón virtual</p>
+        <p class="info">
+            <marquee> Benvingut al teu buzón virtual </marquee>
+        </p>
     </header>
 
     <main>
-<!-- SETMANA 1: Botó Saluda 
+
+<!-- 
+    SETMANA 1: Botó Saluda 
         <section id="benvinguda">
             <button id="btnSaluda">Saluda'm!</button>
-        </section> -->
+        </section> 
+-->
+
         <!-- SETMANA 3: Llistat de cartes i botó afegir de prova (ON ES VEUREN LES CARTES) -->
         <section id="llistatCartes">
             <h2>📬 Cartes rebudes</h2>
+            <button id="btnMostrar">👁️ Amagar Cartes</button>
             <button id="btnAfegir">➕ Afegir carta de prova</button>
-            <button id="btnMostrar">👁️ Mostrar cartes</button>
-            
+
             <!-- Aquí el JS pintarà les cartes. El 'clearfix' evita que el contenidor col·lapsi pels floats -->
             <div id="contenidorCartes"></div>
             <div class="clearfix"></div>
@@ -47,9 +53,8 @@
         <section id="registre">
             <h2>📋 Registre de l'oficina</h2>
             <button id="btnMostrarTaula">👁️ Mostrar / Ocultar Taula</button>
-            
-            <!-- La taula comença oculta gràcies al CSS (display: none) -->
-            <table id="taulaCartes">
+
+            <table id="taulaCartes" style="display: none;">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -74,7 +79,8 @@
     <div id="buzon">📮</div>
 
     <!-- ⚠️ CANVI CRÍTIC: type="module" en lloc de "defer" -->
-    <script type="module" src="script.js"></script>
+    <script type="module" src="script/script.js"></script>
 
 </body>
+
 </html>

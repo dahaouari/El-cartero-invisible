@@ -1,13 +1,16 @@
-# Entorno virtual de Python
-Servidor/.venv/
-
-# Caché de Python
+# --- Python (Servidor) ---
+.venv/
+venv/
 __pycache__/
 *.pyc
+# No volem pujar les dades de prova de l'arxivador
+Servidor/cartas.json 
 
-# Jest / Node
+# --- Node.js (Client) ---
 node_modules/
+npm-debug.log*
 
-# Configuración de VS Code
-.vscode/# Created by venv; see https://docs.python.org/3/library/venv.html
-*
+# --- Editors i Sistema ---
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+import json
+import os
 
 app = FastAPI()
 
@@ -19,7 +21,7 @@ class Carta(BaseModel):
 # 🟦 LLISTA DE CARTES
 # ==========================
 
-cartes = [
+cartes_inicials = [
     {
         "id": 1,
         "remitent": "Maria",
@@ -45,6 +47,30 @@ cartes = [
 
 
 # ==========================
+# 🗄️ L'ARXIVADOR (Persistència en JSON)
+# ==========================
+
+DATA_FILE = os.path.join(os.path.dirname(__file__), "cartas.json")
+
+
+def cargar_cartes():
+    """Llegeix les cartes del fitxer o conserva les cartes inicials."""
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return [carta.copy() for carta in cartes_inicials]
+
+
+def guardar_cartes(cartes_a_guardar):
+    """Escriu les cartes al fitxer."""
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(cartes_a_guardar, f, indent=2, ensure_ascii=False)
+
+
+cartes = cargar_cartes()
+
+
+# ==========================
 # 🏠 GET /
 # ==========================
 @app.get("/")
@@ -61,11 +87,30 @@ def crear_carta(carta: Carta):
 
     nova_carta = carta.model_dump()
 
-    nova_carta["id"] = len(cartes) + 1
+    nova_carta["id"] = max((c["id"] for c in cartes), default=0) + 1
 
     cartes.append(nova_carta)
+    guardar_cartes(cartes)
 
     return nova_carta
+
+
+# ==========================
+# 🟥 DELETE /cartas/{id}
+# ==========================
+
+@app.delete("/cartas/{id}")
+def eliminar_carta(id: int):
+    for carta in cartes:
+        if carta["id"] == id:
+            cartes.remove(carta)
+            guardar_cartes(cartes)
+            return {"missatge": f"Carta {id} eliminada correctament"}
+
+    raise HTTPException(
+        status_code=404,
+        detail="Carta no trobada per eliminar"
+    )
 
 
 # ==========================
@@ -100,7 +145,7 @@ def llistar_cartes(
     if personatge:
         cartesFiltrades = [
             c for c in cartes
-            if c["personatge"] == personatge
+            if c.get("personatge") == personatge
         ]
     else:
         cartesFiltrades = cartes
