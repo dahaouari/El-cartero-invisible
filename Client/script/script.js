@@ -1,25 +1,9 @@
 // ==========================================
-// script.js
+// script.js - SETMANA 5: Connectat al Servidor
 // ==========================================
 
-// Array de cartes simulades
-const cartesSimulades = [
-    {
-        id: 1,
-        remitent: "Maria",
-        contingut: "Hola, com estàs? T'escric des del passat."
-    },
-    {
-        id: 2,
-        remitent: "Joan",
-        contingut: "Avui he vist un carter misteriós."
-    },
-    {
-        id: 3,
-        remitent: "Laia",
-        contingut: "Recorda que el temps és relatiu."
-    }
-];
+const API_URL = "http://127.0.0.1:8000/cartas";
+let cartes = [];
 
 
 // ==========================================
@@ -73,6 +57,46 @@ export function renderitzarCartes(cartes) {
     });
 }
 
+async function carregarCartes() {
+    try {
+        const response = await fetch(API_URL);
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        cartes = await response.json();
+        renderitzarCartes(cartes);
+        renderitzarTaula(cartes);
+    } catch (error) {
+        console.error("Error carregant cartes:", error);
+        alert("No s'han pogut carregar les cartes. Comprova que el servidor Python està en marxa.");
+    }
+}
+
+async function crearCarta(dadesCarta) {
+    const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dadesCarta)
+    });
+    if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    await carregarCartes();
+}
+
+async function eliminarCarta(id) {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "DELETE"
+    });
+    if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    await carregarCartes();
+}
+
 
 // ==========================================
 //  INICIALITZACIÓ
@@ -100,7 +124,7 @@ function inicialitzar() {
     const titol = document.querySelector("#titolPrincipal");
 
     if (titol) {
-        titol.textContent = "📮 El Cartero Invisible – Setmana 2";
+        titol.textContent = "📮 El Cartero Invisible";
         titol.setAttribute("data-role", "banner");
     }
 
@@ -129,7 +153,7 @@ function inicialitzar() {
                 // Estava amagat → el mostrem i canviem el text del botó
                 contenidor.style.display = "block";
                 if (clearfix) clearfix.style.display = "block";
-                renderitzarCartes(cartesSimulades);
+                renderitzarCartes(cartes);
                 botoMostrarCartes.textContent = "👁️ Amagar Cartes";
             } else {
                 // Estava visible → l'amaguem i canviem el text del botó
@@ -142,37 +166,36 @@ function inicialitzar() {
 
     const botoAfegirCartes = document.querySelector("#btnAfegir");
     if (botoAfegirCartes) {
-        botoAfegirCartes.addEventListener("click", () => {
-            const nouId = cartesSimulades.length > 0
-                ? Math.max(...cartesSimulades.map(carta => carta.id)) + 1
-                : 1;
-            cartesSimulades.push({
-                id: nouId,
-                remitent: "Nou Remitent",
-                contingut: "Aquesta és una carta de prova."
-            });
-            renderitzarCartes(cartesSimulades);
-            renderitzarTaula(cartesSimulades);
+        botoAfegirCartes.addEventListener("click", async () => {
+            try {
+                await crearCarta({
+                    remitent: "Carter de Prova",
+                    destinatari: "Tothom",
+                    contingut: "Aquesta és una carta de prova enviada al servidor.",
+                    personatge: "Einstein"
+                });
+            } catch (error) {
+                console.error("Error afegint carta de prova:", error);
+                alert("No s'ha pogut afegir la carta de prova.");
+            }
         });
     }
 
-    renderitzarCartes(cartesSimulades);
-    renderitzarTaula(cartesSimulades);
+    carregarCartes();
 
     // ======================================
     // 🟦 SETMANA 4: Delegació d'esdeveniments (EL PORTER)
     // ======================================
     const contenidorCartes = document.querySelector("#contenidorCartes");
     if (contenidorCartes) {
-        contenidorCartes.addEventListener("click", (event) => {
-            if (event.target.classList.contains("btn-eliminar")) {
+        contenidorCartes.addEventListener("click", async (event) => {
+            if (event.target instanceof Element && event.target.classList.contains("btn-eliminar")) {
                 const idAEliminar = parseInt(event.target.dataset.id);
-
-                const index = cartesSimulades.findIndex(c => c.id === idAEliminar);
-                if (index !== -1) {
-                    cartesSimulades.splice(index, 1);
-                    renderitzarCartes(cartesSimulades);
-                    renderitzarTaula(cartesSimulades);
+                try {
+                    await eliminarCarta(idAEliminar);
+                } catch (error) {
+                    console.error("Error eliminant carta:", error);
+                    alert("No s'ha pogut eliminar la carta.");
                 }
             }
         });
@@ -180,17 +203,17 @@ function inicialitzar() {
 
     const cosTaula = document.querySelector("#cosTaula");
     if (cosTaula) {
-        cosTaula.addEventListener("click", (event) => {
+        cosTaula.addEventListener("click", async (event) => {
             if (!(event.target instanceof Element) || !event.target.classList.contains("btn-eliminar")) {
                 return;
             }
 
-            const idAEliminar = parseInt(event.target.dataset.id, 10);
-            const index = cartesSimulades.findIndex(carta => carta.id === idAEliminar);
-            if (index !== -1) {
-                cartesSimulades.splice(index, 1);
-                renderitzarCartes(cartesSimulades);
-                renderitzarTaula(cartesSimulades);
+            const idAEliminar = event.target.dataset.id;
+            try {
+                await eliminarCarta(idAEliminar);
+            } catch (error) {
+                console.error("Error eliminant carta:", error);
+                alert("No s'ha pogut eliminar la carta.");
             }
         });
     }
@@ -200,7 +223,7 @@ function inicialitzar() {
     // ======================================
     const formCarta = document.querySelector("#formCarta");
     if (formCarta) {
-        formCarta.addEventListener("submit", (event) => {
+        formCarta.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const remitent = document.querySelector("#remitent").value.trim();
@@ -213,19 +236,13 @@ function inicialitzar() {
                 return;
             }
 
-            const nouId = cartesSimulades.length > 0 ? Math.max(...cartesSimulades.map(c => c.id)) + 1 : 1;
-
-            cartesSimulades.push({
-                id: nouId,
-                remitent: remitent,
-                destinatari: destinatari,
-                contingut: contingut,
-                personatge: personatge
-            });
-
-            renderitzarCartes(cartesSimulades);
-            renderitzarTaula(cartesSimulades);
-            formCarta.reset();
+            try {
+                await crearCarta({ remitent, destinatari, contingut, personatge });
+                formCarta.reset();
+            } catch (error) {
+                console.error("Error enviant formulari:", error);
+                alert("No s'ha pogut enviar la carta.");
+            }
         });
     }
 

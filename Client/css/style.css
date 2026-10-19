@@ -1,4 +1,16 @@
 /* ==========================================
+   🟪 SETMANA 5: PALETA DE COLORS OFICIAL
+   ========================================== */
+:root {
+    --color-principal: #8B4513;
+    --color-secundari: #e74c3c;
+    --color-fons: #f4f1ea;
+    --color-text: #2c3e50;
+    --color-carta: #ffffff;
+    --color-vora: #d4c5b0;
+}
+
+/* ==========================================
    ESTILS GENERALS
    ========================================== */
 * {
@@ -6,24 +18,25 @@
 }
 
 body {
-    background-color: #f4f1ea;
+    background-color: var(--color-fons);
+    color: var(--color-text);
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 20px;
 }
 
 h1 {
-    color: #2c3e50;
+    color: var(--color-text);
     font-size: 2.5rem;
 }
 
 marquee {
-    background-color: #2c3e50;
+    background-color: var(--color-text);
     color: white;
 }
 
 h1:hover { /* canvia de color en passar-hi el ratolí */
-    color: #e74c3c;
+    color: var(--color-secundari);
 }
 
 section {
@@ -32,7 +45,7 @@ section {
 }
 
 section:first-child {
-    border-left: 4px solid #2c3e50;
+    border-left: 4px solid var(--color-text);
 }
 
 /* ==========================================
@@ -44,7 +57,7 @@ section:first-child {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: #8B4513;
+    background: var(--color-principal);
     color: white;
     padding: 16px;
     border-radius: 10px;
@@ -63,8 +76,8 @@ section:first-child {
     float: left;
     width: 45%;        /* Dues cartes per fila */
     margin: 2.5%;      /* Espai entre elles */
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: var(--color-carta);
+    border: 1px solid var(--color-vora);
     padding: 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -76,7 +89,7 @@ section:first-child {
     display: block;
     margin-top: 12px;
     margin-left: auto;
-    background-color: #e74c3c;
+    background-color: var(--color-secundari);
     color: white;
     border: none;
     padding: 6px 12px;
@@ -104,7 +117,7 @@ section:first-child {
 /* 1. El contenidor de la secció (la finestreta) */
 #formulariCarta {
     background-color: #fdfbf7; /* Color paper antic / pergamí */
-    border: 2px dashed #d4c5b0; /* Vora discontínua, com un cupó postal */
+    border: 2px dashed var(--color-vora); /* Vora discontínua, com un cupó postal */
     border-radius: 12px;
     padding: 2rem;
     margin-top: 2rem;
@@ -130,11 +143,11 @@ section:first-child {
     width: 100%;
     padding: 12px 15px;
     margin-bottom: 1.2rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--color-vora);
     border-radius: 6px;
     font-size: 1rem;
     font-family: inherit;
-    background-color: #fff;
+    background-color: var(--color-carta);
     box-sizing: border-box; 
     transition: border-color 0.3s, box-shadow 0.3s; 
 }
@@ -143,7 +156,7 @@ section:first-child {
 #formCarta input:focus,
 #formCarta textarea:focus {
     outline: none;
-    border-color: #8B4513; /* Es posa del color del buzón! */
+    border-color: var(--color-principal); /* Es posa del color del buzón! */
     box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.2); 
 }
 
@@ -155,7 +168,7 @@ section:first-child {
 
 /* 6. El botó d'enviar */
 #formCarta button[type="submit"] {
-    background-color: #8B4513; 
+    background-color: var(--color-principal);
     color: white;
     padding: 14px 24px;
     border: none;
@@ -184,7 +197,7 @@ section:first-child {
 }
 
 #btnMostrarTaula {
-    background-color: #2c3e50;
+    background-color: var(--color-text);
     color: white;
     border: none;
     padding: 10px 16px;
@@ -197,7 +210,7 @@ section:first-child {
 #taulaCartes {
     width: 100%;
     border-collapse: collapse;
-    background: white;
+    background: var(--color-carta);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 
     /* ⭐ CLAU M09: La taula té position relative i z-index baix */
@@ -207,13 +220,13 @@ section:first-child {
 
 #taulaCartes th,
 #taulaCartes td {
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-vora);
     padding: 12px;
     text-align: left;
 }
 
 #taulaCartes th {
-    background-color: #8B4513;
+    background-color: var(--color-principal);
     color: white;
 }
 
@@ -236,13 +249,13 @@ section:first-child {
 #registre {
     margin-top: 3rem;
     padding: 1rem;
-    background: #fff;
+    background: var(--color-carta);
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 #btnMostrarTaula {
-    background-color: #2c3e50;
+    background-color: var(--color-text);
     color: white;
     border: none;
     padding: 10px 16px;
@@ -269,13 +282,13 @@ section:first-child {
 }
 
 #taulaCartes th, #taulaCartes td {
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-vora);
     padding: 12px;
     text-align: left;
 }
 
 #taulaCartes th {
-    background-color: #8B4513;
+    background-color: var(--color-principal);
     color: white;
 }
 
@@ -299,4 +312,32 @@ section:first-child {
 /* Assegura't que el teu #buzon tingui aquest z-index altíssim */
 #buzon {
     z-index: 1000; /* El buzó sempre passarà per sobre de la taula */
+}
+
+/* ==========================================
+   🟪 SETMANA 5: PSEUDO-ELEMENTS (Sobres i Segells)
+   ========================================== */
+
+.carta::before {
+    content: "✉️";
+    font-size: 2rem;
+    display: block;
+    text-align: center;
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+
+#buzon::after {
+    content: "🏷️";
+    font-size: 2.5rem;
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    transform: rotate(15deg);
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+    transition: transform 0.2s;
+}
+
+#buzon:hover::after {
+    transform: rotate(0deg) scale(1.2);
 }
