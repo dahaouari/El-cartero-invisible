@@ -45,6 +45,7 @@ export function renderitzarCartes(cartes) {
         btnEliminar.textContent = "Eliminar";
         btnEliminar.className = "btn-eliminar";
         btnEliminar.dataset.id = carta.id;
+        btnEliminar.type = "button";
 
         // Muntem la carta
         divCarta.appendChild(titolCarta);
@@ -57,7 +58,7 @@ export function renderitzarCartes(cartes) {
     });
 }
 
-async function carregarCartes() {
+export async function carregarCartes() {
     try {
         const response = await fetch(API_URL);
         if (!response.ok) {

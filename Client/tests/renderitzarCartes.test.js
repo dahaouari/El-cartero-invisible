@@ -1,4 +1,4 @@
-import { renderitzarCartes } from "../script/script.js";
+import { renderitzarCartes } from "../js/script.js";
 
 test("renderitza les cartes correctament", () => {
     const cartes = [

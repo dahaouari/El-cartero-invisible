@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { renderitzarCartes } from '../script/script.js';
+import { renderitzarCartes } from '../js/script.js';
 import userEvent from '@testing-library/user-event';
 
 // ==========================================
