@@ -47,10 +47,17 @@ export function renderitzarCartes(cartes) {
         btnEliminar.dataset.id = carta.id;
         btnEliminar.type = "button";
 
+        const btnEditar = document.createElement("button");
+        btnEditar.textContent = "Editar";
+        btnEditar.className = "btn-editar";
+        btnEditar.dataset.id = carta.id;
+        btnEditar.type = "button";
+
         // Muntem la carta
         divCarta.appendChild(titolCarta);
         divCarta.appendChild(paragraf);
         divCarta.appendChild(idSpan);
+        divCarta.appendChild(btnEditar);
         divCarta.appendChild(btnEliminar);
 
         // Afegim la carta al contenidor
@@ -87,7 +94,7 @@ async function crearCarta(dadesCarta) {
     await carregarCartes();
 }
 
-async function eliminarCarta(id) {
+export async function eliminarCarta(id) {
     const response = await fetch(`${API_URL}/${id}`, {
         method: "DELETE"
     });
@@ -96,6 +103,106 @@ async function eliminarCarta(id) {
     }
 
     await carregarCartes();
+}
+
+export async function actualitzarCarta(id, dadesCarta) {
+    const response = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dadesCarta)
+    });
+    if (!response.ok) {
+        throw new Error(`Error HTTP: ${response.status}`);
+    }
+
+    await carregarCartes();
+}
+
+function mostrarFormulariEdicio(carta) {
+    const seccio = document.querySelector("#modalEdicio");
+    if (!seccio) return;
+
+    document.querySelector("#editId").value = carta.id;
+    document.querySelector("#editRemitent").value = carta.remitent;
+    document.querySelector("#editDestinatari").value = carta.destinatari;
+    document.querySelector("#editContingut").value = carta.contingut;
+    document.querySelector("#editPersonatge").value = carta.personatge || "Einstein";
+    seccio.hidden = false;
+    obrirModal();
+    seccio.classList.add("actiu");
+    seccio.classList.add("modal-visible");
+    if (typeof seccio.scrollIntoView === "function") {
+        seccio.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+}
+
+function amagarFormulariEdicio() {
+    const seccio = document.querySelector("#modalEdicio");
+    if (seccio) {
+        tancarModal();
+        seccio.hidden = true;
+        seccio.classList.remove("actiu");
+        seccio.classList.remove("modal-visible");
+    }
+}
+
+function obrirModal() {
+    const modal = document.querySelector("#modalEdicio");
+    if (!modal) return;
+
+    modal.hidden = false;
+    modal.classList.add("actiu");
+    document.body.style.overflow = "hidden";
+}
+
+function tancarModal() {
+    const modal = document.querySelector("#modalEdicio");
+    if (!modal) return;
+
+    modal.classList.remove("actiu");
+    modal.classList.remove("modal-visible");
+    modal.hidden = true;
+    document.body.style.overflow = "";
+}
+
+function trobarCarta(id) {
+    return cartes.find(carta => carta.id === Number(id));
+}
+
+export function aplicarTemaGuardat() {
+    const btnTema = document.querySelector("#btnTema");
+    const temaFosc = localStorage.getItem("tema") === "fosc";
+
+    document.body.classList.toggle("tema-fosc", temaFosc);
+    if (btnTema) {
+        btnTema.textContent = temaFosc ? "☀️ Mode Clar" : "🌙 Mode Fosc";
+    }
+}
+
+export function canviarTema() {
+    const temaFosc = document.body.classList.toggle("tema-fosc");
+    localStorage.setItem("tema", temaFosc ? "fosc" : "clar");
+
+    const btnTema = document.querySelector("#btnTema");
+    if (btnTema) {
+        btnTema.textContent = temaFosc ? "☀️ Mode Clar" : "🌙 Mode Fosc";
+    }
+}
+
+function preomplirUltimPersonatge() {
+    const personatge = document.querySelector("#personatge");
+    const ultim = localStorage.getItem("ultimPersonatge");
+    if (personatge && ultim) {
+        personatge.value = ultim;
+    }
+}
+
+function recuperarEsborrany() {
+    const contingut = document.querySelector("#contingut");
+    const esborrany = sessionStorage.getItem("cartaEnProces");
+    if (contingut && esborrany) {
+        contingut.value = esborrany;
+    }
 }
 
 
@@ -136,6 +243,16 @@ function inicialitzar() {
         info.style.color = "#2c3e50";
     }
 
+    aplicarTemaGuardat();
+
+    const btnTema = document.querySelector("#btnTema");
+    if (btnTema) {
+        btnTema.addEventListener("click", canviarTema);
+    }
+
+    preomplirUltimPersonatge();
+    recuperarEsborrany();
+
 
     // ======================================
     // SETMANA 4: Botó Mostrar/Ocultar Cartes (TOGGLE)
@@ -147,20 +264,15 @@ function inicialitzar() {
             const clearfix = document.querySelector("#contenidorCartes + .clearfix"); // El germà del contenidor
             if (!contenidor) return;
 
-            // Mirem l'estil real que s'està aplicant
-            const estilActual = window.getComputedStyle(contenidor).display;
-
-            if (estilActual === "none") {
-                // Estava amagat → el mostrem i canviem el text del botó
-                contenidor.style.display = "block";
+            if (contenidor.style.display === "none") {
+                contenidor.style.display = "";
                 if (clearfix) clearfix.style.display = "block";
                 renderitzarCartes(cartes);
-                botoMostrarCartes.textContent = "👁️ Amagar Cartes";
+                botoMostrarCartes.textContent = "🙈 Amagar cartes";
             } else {
-                // Estava visible → l'amaguem i canviem el text del botó
                 contenidor.style.display = "none";
                 if (clearfix) clearfix.style.display = "none";
-                botoMostrarCartes.textContent = "👁️ Mostrar Cartes";
+                botoMostrarCartes.textContent = "👁️ Mostrar cartes";
             }
         });
     }
@@ -190,9 +302,20 @@ function inicialitzar() {
     const contenidorCartes = document.querySelector("#contenidorCartes");
     if (contenidorCartes) {
         contenidorCartes.addEventListener("click", async (event) => {
-            if (event.target instanceof Element && event.target.classList.contains("btn-eliminar")) {
+            if (!(event.target instanceof Element)) return;
+
+            if (event.target.classList.contains("btn-editar")) {
+                const carta = trobarCarta(event.target.dataset.id);
+                if (carta) mostrarFormulariEdicio(carta);
+                return;
+            }
+
+            if (event.target.classList.contains("btn-eliminar")) {
                 const idAEliminar = parseInt(event.target.dataset.id);
                 try {
+                    if (typeof window.confirm === "function" && !window.confirm("Segur que vols eliminar aquesta carta?")) {
+                        return;
+                    }
                     await eliminarCarta(idAEliminar);
                 } catch (error) {
                     console.error("Error eliminant carta:", error);
@@ -202,15 +325,33 @@ function inicialitzar() {
         });
     }
 
+    const modalEdicio = document.querySelector("#modalEdicio");
+    if (modalEdicio) {
+        modalEdicio.addEventListener("click", event => {
+            if (event.target === modalEdicio) tancarModal();
+        });
+    }
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") tancarModal();
+    });
+
     const cosTaula = document.querySelector("#cosTaula");
     if (cosTaula) {
         cosTaula.addEventListener("click", async (event) => {
             if (!(event.target instanceof Element) || !event.target.classList.contains("btn-eliminar")) {
+                if (event.target instanceof Element && event.target.classList.contains("btn-editar")) {
+                    const carta = trobarCarta(event.target.dataset.id);
+                    if (carta) mostrarFormulariEdicio(carta);
+                }
                 return;
             }
 
             const idAEliminar = event.target.dataset.id;
             try {
+                if (typeof window.confirm === "function" && !window.confirm("Segur que vols eliminar aquesta carta?")) {
+                    return;
+                }
                 await eliminarCarta(idAEliminar);
             } catch (error) {
                 console.error("Error eliminant carta:", error);
@@ -219,11 +360,48 @@ function inicialitzar() {
         });
     }
 
+    const formEditar = document.querySelector("#formEditar");
+    if (formEditar) {
+        formEditar.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const id = document.querySelector("#editId").value;
+            const dadesCarta = {
+                remitent: document.querySelector("#editRemitent").value.trim(),
+                destinatari: document.querySelector("#editDestinatari").value.trim(),
+                contingut: document.querySelector("#editContingut").value.trim(),
+                personatge: document.querySelector("#editPersonatge").value.trim() || "Einstein"
+            };
+
+            try {
+                await actualitzarCarta(id, dadesCarta);
+                tancarModal();
+            } catch (error) {
+                console.error("Error editant carta:", error);
+                alert("No s'ha pogut editar la carta.");
+            }
+        });
+    }
+
+    const btnCancelarEdicio = document.querySelector("#btnCancelarEdicio");
+    const btnCancelLarEdicio = document.querySelector("#btnCancel·larEdicio");
+    const btnTancarModal = document.querySelector("#btnTancarModal");
+    [btnCancelarEdicio, btnCancelLarEdicio, btnTancarModal].forEach(btn => {
+        if (btn) btn.addEventListener("click", tancarModal);
+    });
+
     // ======================================
     // 🟦 SETMANA 4: Formulari
     // ======================================
     const formCarta = document.querySelector("#formCarta");
     if (formCarta) {
+        const contingut = document.querySelector("#contingut");
+        if (contingut) {
+            contingut.addEventListener("input", event => {
+                sessionStorage.setItem("cartaEnProces", event.target.value);
+            });
+        }
+
         formCarta.addEventListener("submit", async (event) => {
             event.preventDefault();
 
@@ -239,6 +417,8 @@ function inicialitzar() {
 
             try {
                 await crearCarta({ remitent, destinatari, contingut, personatge });
+                localStorage.setItem("ultimPersonatge", personatge);
+                sessionStorage.removeItem("cartaEnProces");
                 formCarta.reset();
             } catch (error) {
                 console.error("Error enviant formulari:", error);
@@ -301,6 +481,13 @@ function renderitzarTaula(cartes) {
         btnEliminarTaula.className = "btn-eliminar";
         btnEliminarTaula.dataset.id = carta.id;
         cellAccions.appendChild(btnEliminarTaula);
+
+        const btnEditarTaula = document.createElement("button");
+        btnEditarTaula.textContent = "Editar";
+        btnEditarTaula.className = "btn-editar";
+        btnEditarTaula.dataset.id = carta.id;
+        btnEditarTaula.type = "button";
+        cellAccions.appendChild(btnEditarTaula);
         fila.appendChild(cellAccions);
 
         cosTaula.appendChild(fila);
@@ -317,7 +504,9 @@ function toggleTaula() {
 
     if (estilActual === "none") {
         taula.style.display = "table"; // La mostrem
+        taula.hidden = false;
     } else {
         taula.style.display = "none";  // L'ocultem
+        taula.hidden = true;
     }
 }

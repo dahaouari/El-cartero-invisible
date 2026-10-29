@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 # No volem pujar les dades de prova de l'arxivador
 Servidor/cartas.json 
+Servidor/.env
 
 # --- Node.js (Client) ---
 node_modules/

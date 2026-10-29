@@ -9,52 +9,55 @@
 </head>
 
 <body>
-
     <header>
         <h1 id="titolPrincipal">El Cartero Invisible</h1>
         <p class="info">
-            <marquee> Benvingut al teu buzón virtual </marquee>
+            <marquee>Benvingut al teu buzón virtual</marquee>
         </p>
+        <button id="btnTema" class="btn-tema" type="button">🌙 Canviar Tema</button>
     </header>
 
     <main>
-
-<!-- 
-    SETMANA 1: Botó Saluda 
         <section id="benvinguda">
-            <button id="btnSaluda">Saluda'm!</button>
-        </section> 
--->
+            <button id="btnSaluda" type="button">Saluda'm!</button>
+        </section>
 
-        <!-- SETMANA 3: Llistat de cartes i botó afegir de prova (ON ES VEUREN LES CARTES) -->
         <section id="llistatCartes">
             <h2>📬 Cartes rebudes</h2>
-            <button id="btnMostrar">👁️ Amagar Cartes</button>
-            <button id="btnAfegir">➕ Afegir carta de prova</button>
-
-            <!-- Aquí el JS pintarà les cartes. El 'clearfix' evita que el contenidor col·lapsi pels floats -->
+            <button id="btnMostrar" type="button">👁️ Amagar Cartes</button>
+            <button id="btnAfegir" type="button">➕ Afegir carta de prova</button>
             <div id="contenidorCartes"></div>
             <div class="clearfix"></div>
         </section>
 
-        <!-- SETMANA 4: Formulari per enviar cartes reals -->
         <section id="formulariCarta">
             <h2>✍️ Escriu una nova carta</h2>
             <form id="formCarta">
-                <input type="text" id="remitent" placeholder="El teu nom (Remitent)" required>
-                <input type="text" id="destinatari" placeholder="A qui va dirigida? (Destinatari)" required>
-                <textarea id="contingut" placeholder="Escriu la teva carta..." required></textarea>
-                <input type="text" id="personatge" placeholder="Personatge (ex: Einstein)">
-                <button type="submit">📨 Enviar carta</button>
+                <input type="text" id="remitent" placeholder="Remitent" required>
+                <input type="text" id="destinatari" placeholder="Destinatari" required>
+                <textarea id="contingut" placeholder="Contingut..." required></textarea>
+                <input type="text" id="personatge" placeholder="Personatge (Einstein)">
+                <button type="submit">📨 Enviar</button>
             </form>
         </section>
 
-        <!-- 🟪 SETMANA 4 (M09): Taula de Registre (Ocultada per defecte) -->
-        <section id="registre">
-            <h2>📋 Registre de l'oficina</h2>
-            <button id="btnMostrarTaula">👁️ Mostrar / Ocultar Taula</button>
+        <section id="editarCartaFallback" hidden>
+            <h2>✏️ Editar carta</h2>
+            <form id="formEditarFallback">
+                <input type="hidden" id="editIdFallback">
+                <input type="text" id="editRemitentFallback" placeholder="Remitent" required>
+                <input type="text" id="editDestinatariFallback" placeholder="Destinatari" required>
+                <textarea id="editContingutFallback" placeholder="Contingut..." required></textarea>
+                <input type="text" id="editPersonatgeFallback" placeholder="Personatge (Einstein)">
+                <button type="submit">💾 Desar</button>
+                <button type="button" id="btnCancelarEdicioFallback">❌ Cancel·lar</button>
+            </form>
+        </section>
 
-            <table id="taulaCartes" style="display: none;">
+        <section id="registre">
+            <h2>📋 Registre</h2>
+            <button id="btnMostrarTaula" type="button">👁️ Mostrar Taula</button>
+            <table id="taulaCartes" hidden>
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -64,23 +67,58 @@
                         <th>Accions</th>
                     </tr>
                 </thead>
-                <tbody id="cosTaula">
-                    <!-- El JS omplirà aquestes files dinàmicament -->
-                </tbody>
+                <tbody id="cosTaula"></tbody>
             </table>
         </section>
     </main>
 
+    <!-- 🟦 SETMANA 6: Modal d'Edició -->
+    <div id="modalEdicio" class="modal-overlay" hidden>
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>✏️ Editar carta</h2>
+                <button id="btnTancarModal" class="btn-tancar" type="button">&times;</button>
+            </div>
+
+            <form id="formEditar" class="modal-form">
+                <input type="hidden" id="editId">
+
+                <div class="form-columns">
+                    <div class="form-group">
+                        <label for="editRemitent">Remitent</label>
+                        <input type="text" id="editRemitent" placeholder="Qui envia la carta?" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editDestinatari">Destinatari</label>
+                        <input type="text" id="editDestinatari" placeholder="A qui va dirigida?" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editPersonatge">Personatge</label>
+                    <input type="text" id="editPersonatge" placeholder="Ex: Einstein, Newton...">
+                </div>
+
+                <div class="form-group">
+                    <label for="editContingut">Contingut</label>
+                    <textarea id="editContingut" rows="4" placeholder="Escriu el contingut de la carta..." required></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-guardar">💾 Desar canvis</button>
+                    <button type="button" id="btnCancel·larEdicio" class="btn-cancel·lar">❌ Cancel·lar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2026 El Cartero Invisible</p>
     </footer>
-
-    <!-- El buzón FIX (Sempre visible a la cantonada) -->
     <div id="buzon">📮</div>
 
-    <!-- ⚠️ CANVI CRÍTIC: type="module" en lloc de "defer" -->
     <script type="module" src="js/script.js"></script>
-
 </body>
 
 </html>

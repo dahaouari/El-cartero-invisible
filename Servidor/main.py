@@ -3,8 +3,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import json
 import os
+from dotenv import load_dotenv
 
 app = FastAPI()
+
+# ==========================================
+# 🔐 S7: VARIABLES D'ENTORN
+# ==========================================
+load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 app.add_middleware(
     CORSMiddleware,
@@ -92,58 +100,6 @@ def root():
     return {"missatge": "Hola, món! Benvingut a l'oficina de correus."}
 
 
-# ==========================
-# 🟩 POST /cartas
-# ==========================
-
-@app.post("/cartas")
-def crear_carta(carta: Carta):
-
-    nova_carta = carta.model_dump()
-
-    nova_carta["id"] = max((c["id"] for c in cartes), default=0) + 1
-
-    cartes.append(nova_carta)
-    guardar_cartes(cartes)
-
-    return nova_carta
-
-
-# ==========================
-# 🟥 DELETE /cartas/{id}
-# ==========================
-
-@app.delete("/cartas/{id}")
-def eliminar_carta(id: int):
-    for carta in cartes:
-        if carta["id"] == id:
-            cartes.remove(carta)
-            guardar_cartes(cartes)
-            return {"missatge": f"Carta {id} eliminada correctament"}
-
-    raise HTTPException(
-        status_code=404,
-        detail="Carta no trobada per eliminar"
-    )
-
-
-# ==========================
-# 🟩 GET /cartas/{id}
-# ==========================
-
-@app.get("/cartas/{id}")
-def obtenir_carta(id: int):
-
-    for carta in cartes:
-
-        if carta["id"] == id:
-            return carta
-
-    raise HTTPException(
-        status_code=404,
-        detail="Carta no trobada"
-    )
-
 
 # ==========================
 # 🟩 GET /cartas
@@ -165,3 +121,88 @@ def llistar_cartes(
         cartesFiltrades = cartes
 
     return cartesFiltrades[offset:offset + limit]
+
+# ==========================
+# 🟩 GET /cartas/{id}
+# ==========================
+
+@app.get("/cartas/{id}")
+def obtenir_carta(id: int):
+
+    for carta in cartes:
+
+        if carta["id"] == id:
+            return carta
+
+    raise HTTPException(
+        status_code=404,
+        detail="Carta no trobada"
+    )
+
+
+# ==========================
+# 🟦 GET /config
+# ==========================
+@app.get("/config")
+def config():
+    return {
+        "debug": DEBUG,
+        "ia_configurada": GEMINI_API_KEY is not None and GEMINI_API_KEY != ""
+    }
+
+
+# ==========================
+# 🟩 POST /cartas
+# ==========================
+
+@app.post("/cartas")
+def crear_carta(carta: Carta):
+
+    nova_carta = carta.model_dump()
+
+    nova_carta["id"] = max((c["id"] for c in cartes), default=0) + 1
+
+    cartes.append(nova_carta)
+    guardar_cartes(cartes)
+
+    return nova_carta
+
+
+# ==========================
+# 🟨 PUT /cartas/{id}
+# ==========================
+@app.put("/cartas/{id}")
+def actualitzar_carta(id: int, carta: Carta):
+    for i, carta_actual in enumerate(cartes):
+        if carta_actual["id"] == id:
+            cartes[i] = {
+                "id": id,
+                "remitent": carta.remitent,
+                "destinatari": carta.destinatari,
+                "contingut": carta.contingut,
+                "personatge": carta.personatge
+            }
+            guardar_cartes(cartes)
+            return cartes[i]
+
+    raise HTTPException(status_code=404, detail="Carta no trobada")
+
+
+# ==========================
+# 🟥 DELETE /cartas/{id}
+# ==========================
+
+@app.delete("/cartas/{id}")
+def eliminar_carta(id: int):
+    for carta in cartes:
+        if carta["id"] == id:
+            cartes.remove(carta)
+            guardar_cartes(cartes)
+            return {"missatge": f"Carta {id} eliminada correctament"}
+
+    raise HTTPException(
+        status_code=404,
+        detail="Carta no trobada per eliminar"
+    )
+
+
